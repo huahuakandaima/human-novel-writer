@@ -8,10 +8,10 @@
 
 | 模块 | 文件 | 何时读 |
 |---|---|---|
-| 拆文对标 | `拆文对标/短篇拆文.md`、`长篇拆文.md` | 用户要拆爆款书/对标书时 |
+| 拆文对标 | `拆文对标/短篇拆文.md`、`长篇拆文.md` | 用户要拆爆款书/对标书时（番茄题材可先查 NOVELCATCH https://novelcatch.com/dissect 做预对标参考） |
 | 拆文标尺 | `拆文对标/标尺/`（material-decomposition / output-templates / deconstruction-notes / style-profile-generator / style-profile-protocol / deconstruction-examples / zhihu-style / genre-writing-techniques / real-market-data / output-contract / cross-book-recall） | 拆文过程中按 Stage 需求读取 |
 | 题材库 | `题材库/题材索引.md`（题材总览）、`题材公式.md`（21 大题材写作公式）、`核心梗与读者.md`（核心梗+读者心理）、`short-craft.md`（短篇通用底座）、`short-format.md`（短篇格式）、`short-deslop.md`（短篇去AI味）、原文件名版：genre-catalog / genre-core-mechanics / genre-readers / genre-writing-formulas | 开书选材/写指定题材/写短篇时 |
-| 选题（静态） | `题材库/选题/选题四步.md`（推荐写什么/为什么能爆/行不行/怎么验证）、`读者画像.md`（9 维）、`题材趋势.md`（静态候选假设）、`平台指南.md`（运营+书名简介） | 用户说"帮我选题/写什么能爆"时；无实时榜单，可行性最高给"中" |
+| 选题（静态+数据） | `题材库/选题/选题四步.md`（推荐写什么/为什么能爆/行不行/怎么验证）、`读者画像.md`（9 维）、`题材趋势.md`（静态候选假设）、`平台指南.md`（运营+书名简介） | 用户说"帮我选题/写什么能爆"时；**数据源：NOVELCATCH**（https://novelcatch.com，番茄每日榜单/黑马/情报/赛道对比，agent 可 WebFetch 读取，样本≥15 可给"高"）；无数据时可行性最高给"中" |
 | 长篇题材卡 | `题材库/长篇题材卡/{题材}.md`（32 张） | 写对应题材的长篇正文时 |
 | 短篇风格包 | `题材库/短篇风格包/{题材}.md`（10 个） | 写对应题材的短篇时 |
 | 钩子库 | `钩子库/hooks-chapter.md`（章首7式/章尾13式）、`hooks-paragraph.md`、`hooks-suspense.md` | 设计章首/章尾钩子、悬念时 |

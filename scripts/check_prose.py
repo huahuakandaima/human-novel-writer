@@ -1,5 +1,10 @@
 #!/usr/bin/env python3
-"""检查中文成稿的硬禁令与常见模型化形状。只报警，不自动改文。"""
+"""检查中文成稿的硬禁令与常见模型化形状。只报警，不自动改文。
+
+2026-10-07 起：《小说ai行文规范》为准绳——翻案腔的对比型（不是…而是…等）
+降为人工判断提示（空对比删、有信息量的对比合法）；语义翻转型（看似…实则…等）
+维持硬禁。破折号/冒号仅为标点提示（见函数内注释）。
+"""
 
 from __future__ import annotations
 
@@ -94,14 +99,19 @@ FORBIDDEN_PUNCTUATION = {
     "–": "连接号式破折号",
 }
 
+# 翻案腔·语义翻转型（先立误解再推翻抬价）：维持硬禁——行文规范未豁免
 PIVOT_PATTERNS = (
+    re.compile(r"表面(?:上)?[^。！？\n]{0,90}(?:其实|实际|实则)"),
+    re.compile(r"看似[^。！？\n]{0,90}(?:其实|实际|实则)"),
+)
+
+# 翻案腔·对比型（2026-10-07 行文规范：空对比删、有信息量的对比合法）→ 降为人工判断提示
+CONTRAST_PATTERNS = (
     re.compile(r"(?:并)?不是[^。！？\n]{0,90}而是"),
     re.compile(r"并非[^。！？\n]{0,90}而是"),
     re.compile(r"不在于[^。！？\n]{0,90}而在于"),
     re.compile(r"与其说[^。！？\n]{0,90}(?:不如|毋宁|倒不如)"),
     re.compile(r"[。！？!?]\s*而是"),
-    re.compile(r"表面(?:上)?[^。！？\n]{0,90}(?:其实|实际|实则)"),
-    re.compile(r"看似[^。！？\n]{0,90}(?:其实|实际|实则)"),
 )
 
 SEMANTIC_PIVOT_PATTERNS = (
@@ -507,7 +517,18 @@ def main() -> int:
             f"“{excerpt(match.group())}”"
         )
 
-    occupied_spans = [match.span() for match in pivots]
+    # 对比型翻案腔：2026-10-07 行文规范口径——空对比删、有信息量的对比合法，人工判断
+    contrasts = all_matches(prose, CONTRAST_PATTERNS)
+    for match in contrasts:
+        warnings.append(
+            f"对比型翻案句，第 {line_number(text, match.start())} 行，"
+            f"“{excerpt(match.group(), 44)}”。"
+            "空对比（删掉对比直接说后半句，信息不缺）就改写；对比两项各自带新事实则合法保留。"
+        )
+
+    occupied_spans = [match.span() for match in pivots] + [
+        match.span() for match in contrasts
+    ]
     semantic_pivots = []
     for match in all_matches(prose, SEMANTIC_PIVOT_PATTERNS):
         if any(
@@ -618,7 +639,8 @@ def main() -> int:
         first = streak[0]
         warnings.append(
             f"从第 {line_number(text, first.position)} 行起连续出现 {len(streak)} 个短促单句段，"
-            "检查是否在排队喊结论。"
+            "行文规范允许单句成段作节奏，但纯短语段（无完整句）连 3 个以上必须补一句实写的完整句；"
+            "10 字以内的动作句段落不合法（五例外除外），人工判断。"
         )
 
     counts, opener_examples = opener_counts(paragraphs)
@@ -643,7 +665,7 @@ def main() -> int:
 
     print(f"汉字数 {total_han}")
     print(
-        f"翻案句 {len(pivots)}，翻案腔变形 {len(semantic_pivots)}，"
+        f"翻案句 {len(pivots)}，对比型(人工判断) {len(contrasts)}，翻案腔变形 {len(semantic_pivots)}，"
         f"同构排比 {len(anaphoras)}，名词化 {len(nominalizations)}，"
         f"黑话 {len(jargon_matches)}，硬停词 {len(stop_matches)}，"
         f"模型路标 {len(road_signs)}，需辨语境词 {len(context_jargon_matches)}，"

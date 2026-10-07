@@ -117,6 +117,11 @@ def main():
         print(f"对话引号: 0 个 ✗ 本章无对话？")
         issues.append("FAIL")
 
+    # 2.5 直引号检测（2026-10-07 三章实战：中文正文主用直引号=忘转弯引号，朱雀/排版双坑）
+    straight_pairs = body.count('"') // 2
+    if straight_pairs and straight_pairs >= quotes:
+        print(f"直引号: {straight_pairs} 对 ! 建议替换为中文弯引号“”（正文排版惯例；少量引用外语/代码可保留）")
+
     # 3. 推测词
     guess_hits = {w: body.count(w) for w in GUESS_WORDS if body.count(w) > 0}
     if guess_hits:
